@@ -1,0 +1,4 @@
+LackeyCCG Windows Build Folder
+==============================
+
+Unzip the LackeyCCG Windows build into this folder.
