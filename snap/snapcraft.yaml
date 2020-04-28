@@ -16,26 +16,56 @@ confinement: strict
 architectures:
   - build-on: amd64
 
+environment:
+  WINEPREFIX: "$SNAP_USER_COMMON/.wine"
+  WINEDLLOVERRIDES: "mshtml=" # prevent Wine Mono and Wine Gecko pop-ups
+  # TRICKS: "winxp corefonts mfc40"
+  # VIRTDESKTOP: 1
+  # WINEARCH: "win32"
+  MONO_URL: "https://dl.winehq.org/wine/wine-mono/4.7.1/wine-mono-4.7.1.msi"
+  LC_ALL: "C.UTF-8"
+  SNAP_SOMMELIER_STRICT: "1" # exit when unset variables are used
+
 apps:
   lackeyccg:
-    command: lackeyccg.sh
+    extensions:
+      - gnome-3-28
+    command: bin/sommelier run-exe
+    environment:
+      RUN_EXE: "LackeyCCG/LackeyCCG.exe"
     plugs:
-      - wine-runtime
-      - wine-5-stable
-      - desktop
-      - desktop-legacy
-      - wayland
-      - "x11"
+      - home
+      - network
+      - network-bind
+  wine:
+    extensions:
+      - gnome-3-28
+    command: bin/sommelier
+    plugs:
+      - home
+      - network
+  winetricks:
+    extensions:
+      - gnome-3-28
+    command: bin/sommelier winetricks
+    plugs:
+      - network
 
 parts:
   lackeyccg-zip:
     plugin: dump
     source-type: local
     source: ./snap/local/LackeyCCG
-  lackeyccg-cmd:
+  sommelier-cncra:
     plugin: dump
-    source-type: local
-    source: ./snap/local/bin
+    source: ./snap/local/scripts
+    override-build: |
+      snapcraftctl build
+      set -ex
+      mkdir -p $SNAPCRAFT_PART_INSTALL/wine-runtime
+      mkdir -p $SNAPCRAFT_PART_INSTALL/wine-platform
+    organize:
+      'sommelier': bin/
 
 plugs:
   wine-runtime:
