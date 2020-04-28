@@ -1,0 +1,48 @@
+name: lackeyccg
+base: core18
+version: '0.1a0'
+summary: LackeyCCG is a computer program used to play collectible card games.
+description: |
+  LackeyCCG is a computer program used to play virtually any collectible card
+  game (CCG) against online opponents or for building and testing of CCG decks
+  offline in a solitaire mode[1]. It also allows for the searching of cards
+  within each CCG. LackeyCCG currently has both Mac and Windows versions and
+  will soon have a Linux version. The program was created by Trevor Agnitti and
+  is currently in its beta testing stage.
+
+grade: devel
+confinement: strict
+
+architectures:
+  - build-on: amd64
+
+apps:
+  lackeyccg:
+    command: lackeyccg.sh
+    plugs:
+      - wine-runtime
+      - wine-5-stable
+      - desktop
+      - desktop-legacy
+      - wayland
+      - "x11"
+
+parts:
+  lackeyccg-zip:
+    plugin: dump
+    source-type: local
+    source: ./snap/local/LackeyCCG
+  lackeyccg-cmd:
+    plugin: dump
+    source-type: local
+    source: ./snap/local/bin
+
+plugs:
+  wine-runtime:
+    interface: content
+    target: $SNAP/wine-runtime
+    default-provider: wine-platform-runtime
+  wine-5-stable:
+    interface: content
+    target: $SNAP/wine-platform
+    default-provider: wine-platform-5-stable
