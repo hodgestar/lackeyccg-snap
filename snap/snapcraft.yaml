@@ -15,11 +15,12 @@ confinement: strict
 
 architectures:
   - build-on: amd64
+    run-on: [amd64, i386]
 
 environment:
   WINEPREFIX: "$SNAP_USER_COMMON/.wine"
   WINEDLLOVERRIDES: "mshtml=" # prevent Wine Mono and Wine Gecko pop-ups
-  # TRICKS: "winxp corefonts mfc40"
+  TRICKS: "vcrun2008 mfc40"
   # VIRTDESKTOP: 1
   # WINEARCH: "win32"
   MONO_URL: "https://dl.winehq.org/wine/wine-mono/4.7.1/wine-mono-4.7.1.msi"
@@ -28,8 +29,6 @@ environment:
 
 apps:
   lackeyccg:
-    extensions:
-      - gnome-3-28
     command: bin/sommelier run-exe
     environment:
       RUN_EXE: "LackeyCCG/LackeyCCG.exe"
@@ -38,15 +37,11 @@ apps:
       - network
       - network-bind
   wine:
-    extensions:
-      - gnome-3-28
     command: bin/sommelier
     plugs:
       - home
       - network
   winetricks:
-    extensions:
-      - gnome-3-28
     command: bin/sommelier winetricks
     plugs:
       - network
@@ -56,7 +51,7 @@ parts:
     plugin: dump
     source-type: local
     source: ./snap/local/LackeyCCG
-  sommelier-cncra:
+  sommelier-lackey:
     plugin: dump
     source: ./snap/local/scripts
     override-build: |
